@@ -1,0 +1,43 @@
+@import './theme.scss';
+
+
+.apexcharts-menu-item.exportCSV {
+ display: none;
+}
+
+.no-select, .no-select {
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome, Edge, Opera and Firefox */
+}
+.app {
+  h1, h2, h3, h4, h5, h6, p, span, input {
+    font-family: $font;
+    // margin: 0;
+  }
+}
+
+.select__control{
+  width: 300px;
+}
+
+
+
+.dropDownContentContainer{
+  position: absolute;
+  height:max-content;
+  width: 100%;
+  z-index: 40;
+  top: calc( 100% - 1px);
+  left: 0;
+  box-sizing: border-box;
+
+
+  &.transparent{
+    display: none;
+  }
+}
