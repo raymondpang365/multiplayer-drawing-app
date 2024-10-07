@@ -1,0 +1,75 @@
+@import "styles/theme";
+@import "styles/mixin";
+
+// scaling... any units
+
+
+.loader {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  margin-right: 0;
+  margin-bottom: 0.2rem;
+  margin-top: 0.2rem;
+
+  &:before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+}
+
+.circular {
+  animation: rotate 2s linear infinite;
+  height: 100%;
+  transform-origin: center center;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+}
+
+
+@include spinner(getColorValue("vivid"));
+
+.path {
+  stroke-width: 4;
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  animation: dash 1.5s ease-in-out infinite, stroke 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+.path2 {
+  stroke-width: 4;
+ // stroke-dasharray: 1, 200;
+ // stroke-dashoffset: 0;
+  stroke: #ddd;
+//  animation: blue 6s ease-in-out infinite;
+  stroke-linecap: round;
+}
+
+
+.socialAuthLoadingSpinner{
+  position: relative;
+  margin: 1rem auto;
+
+  z-index: 22;
+  height: 80px;
+  padding: 1rem;
+  width: 80px;
+  box-sizing: border-box;
+  background: black;
+  border-radius: 12px;
+
+  .path {
+    stroke-width: 4;
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+    animation: dash 1.5s ease-in-out infinite, white 6s ease-in-out infinite;
+    stroke-linecap: round;
+  }
+}

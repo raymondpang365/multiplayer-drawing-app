@@ -1,0 +1,55 @@
+// brand
+
+$themes: (
+        ocean: (
+                void: #ffffff,
+                outline: rgba(0, 0, 0, 0.2),
+                vivid: #0074dc,
+                light: #f2f6fc,
+                dark: #002f4b,
+                muted: #6884B8,
+        ),
+        mystic: (
+                void: #ffffff,
+                outline: rgba(0, 0, 0, 0.2),
+                vivid: #B51AEC,
+                light: #d0beee,
+                dark: #191249,
+                muted: #4f49ab,
+        ),
+        utility: (
+                valentine: #ff7796,
+                on: #2ace81,
+                pending:  #ffc439,
+                off: #ff6072
+        )
+);
+
+// Set the default theme
+$default-theme: map-get($themes, mystic);
+
+// Function to get theme values
+@function getColorValue($key, $theme: $default-theme) {
+  @return map-get($theme, $key);
+}
+
+// scale
+
+// light
+$white: #fff;
+$cloud: #f4f4f4;
+$e: #eee;
+$plastic: #e4e4e4;
+$c: #ccc;
+// med
+$metal: #aaa;
+$matte-metal: #999;
+$matte: #777;
+$grey: #555;
+// dark
+$dark: #323232;
+$black: #000;
+
+$font: Circular, -apple-system, BlinkMacSystemFont, Roboto, Helvetica Neue, sans-serif;
+
+
