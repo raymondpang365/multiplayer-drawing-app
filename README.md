@@ -15,8 +15,8 @@ let users freedraw collaboratively in real time.
 - Control the thickness and color with pencil and thickness of eraser
 
 ### Multiplayer
-- Draw together with other friends in real time
-- Speculate the current tools and cursor position of other players in real time
+- Draw together with other people, merging multiplayer drawing smoothly in real time
+- Display the selected tool, cursor position and action of other players in real time
 
 ### Intuitive control
 - Ctrl + Wheel to zoom
