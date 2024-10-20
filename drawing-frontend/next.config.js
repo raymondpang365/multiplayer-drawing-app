@@ -7,13 +7,6 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 
 const configs = {
   // Target must be serverless
-  typescript: {
-    // !! WARN !!
-    // Dangerously allow production builds to successfully complete even if
-    // your project has type errors.
-    // !! WARN !!
-    ignoreBuildErrors: true,
-  },
   webpack: (config, options) => {
     return patchWebpackConfig(config, options)
   },

@@ -337,7 +337,7 @@ const Canvas: React.FC = () => {
                                             }}
                                             max={20}
                                             min={2}
-                                            stp={2}
+                                            step={2}
                                         />
                                     </div>
                                     <div className={selectedTool === TOOLS.ERASER ?
@@ -358,7 +358,7 @@ const Canvas: React.FC = () => {
                                             }}
                                             max={20}
                                             min={2}
-                                            stp={2}
+                                            step={2}
                                         />
                                     </div>
                                 </div>
