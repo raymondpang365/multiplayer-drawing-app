@@ -4,4 +4,4 @@ if [ ! -f .env.$1 ]; then
 fi
 
 set -o allexport && source .env.$1 && set +o allexport
-java -Duser.timezone=UTC -jar target/visusense-controller-1.0.jar
+java -Duser.timezone=UTC -jar target/multiplayer-drawing-app-1.0.jar

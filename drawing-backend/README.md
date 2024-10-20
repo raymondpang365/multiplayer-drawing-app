@@ -1,22 +1,32 @@
-## Multiplayer Drawing App Server
+## Multiplayer Drawing App Backend
 
-```java.runtime.version=21```
+### How to Run
 
-#### Compile
+1. Install java 21
 
-./compile.sh
+    `sudo apt update`
+    
+    `sudo apt install openjdk-21-jdk`
 
-#### Unit testing
+2. Install Maven
 
-> ./test.sh
+    `sudo apt install maven`
 
-#### Environment variable format
+3. Compile
 
-Follow the example `.env.example`
+    This step is only required after code changes
 
-Name the file as `.env.<environment name>`
+    `./compile.sh`
 
-Start the server with `./start.sh <environment name>`
+4. Create environment variable
+
+    Follow the example `.env.example`
+    
+    Name the file as `.env.<environment name>`
+
+5. Run
+
+    Start the server with `./start.sh <environment name>`
 
 
 

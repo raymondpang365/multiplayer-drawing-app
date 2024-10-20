@@ -39,7 +39,6 @@
     "yarn": "^1.22.22"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^3.0.3",
     "@types/node": "20.9.0",
     "critters": "^0.0.10",
     "sass": "^1.45.0",
