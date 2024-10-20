@@ -44,9 +44,4 @@ public class LocalCanvasCache {
             canvas[y][x] = pixel;
         }
     }
-
-    public static void main(String[] args) {
-        LocalCanvasCache cache = new LocalCanvasCache();
-        // Test the canvas
-    }
 }
