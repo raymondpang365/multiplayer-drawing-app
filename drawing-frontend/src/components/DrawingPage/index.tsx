@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react'
+import React from 'react'
 import Head from "./misc/Head";
 import st from './DrawingPage.module.scss'
-import ErrorBanner from "./misc/error/errorBanner";
 import Canvas from "./canvas/Canvas";
 
 
@@ -36,7 +35,6 @@ export default function DrawingPage({
     `}</style>
             <Head title={'Drawing App By HKSEA x Raymond'}/>
             <main className={st.app}>
-                <ErrorBanner/>
                 <Canvas/>
             </main>
         </div>

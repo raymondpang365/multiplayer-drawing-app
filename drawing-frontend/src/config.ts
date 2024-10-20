@@ -1,5 +1,3 @@
-const __DEV__ = process.env.NODE_ENV === "development"
-
 const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT
 
 const domain = process.env.NEXT_PUBLIC_DOMAIN
@@ -13,8 +11,18 @@ else{
 	backendApiUrl = `http://${domain}:${backendPort}/api`
 }
 
+interface AppConfig {
+    apiUrl: string;
+    app: {
+        htmlAttributes: { lang: string };
+        title: string;
+        titleTemplate: string;
+        meta: Array<{ name: string; content: string }>;
+        links: string[];
+    };
+}
 
-export default {
+const config : AppConfig = {
     apiUrl: backendApiUrl,
     app: {
         htmlAttributes: { lang: 'en' },
@@ -32,3 +40,5 @@ export default {
         ]
     }
 };
+
+export default config

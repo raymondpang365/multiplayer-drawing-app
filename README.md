@@ -12,7 +12,7 @@ let users freedraw collaboratively in real time.
 
 ### Pencil and Eraser
 - Freedraw with pencil and eraser
-- Control the thickness and color with pencil and thickness of eraser
+- Control the thickness and color of pencil and thickness of eraser
 
 ### Multiplayer
 - Draw together with other people, merging multiplayer drawing smoothly in real time
@@ -41,3 +41,4 @@ let users freedraw collaboratively in real time.
 
 [Backebd Setup Instruction](drawing-backend/README.md)
 
+![Preview](preview.png)

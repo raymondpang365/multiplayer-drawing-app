@@ -1,24 +1,28 @@
 import Head from 'next/head'
 import React from "react";
-function SiteHead({title = 'Testing'}) {
+
+function SiteHead({
+                  title = 'Drawing App By HKSEA x Raymond',
+                desc = 'Drawing App By HKSEA x Raymond'
+}) {
   return (
       <Head>
           <title> {title}</title>
           <link rel="icon" href="/cube_white.svg"/>
           <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro' rel='stylesheet' type='text/css'/>
           <meta charSet="utf-8"/>
-          <meta name="author" content="Pretech"/>
+          <meta name="author" content="Raymond Pang"/>
           <meta name="viewport" content="width=device-width, initial-scale=1"/>
 
           {/* KEYWORDS */}
-          <meta name="title" content="Visusense Dashboard"/>
+          <meta name="title" content={title}/>
           <meta
               name="description"
-              content="Dashboard for Visusense AIOT"
+              content={desc}
           />
           <meta
               name="keywords"
-              content="Pretech, AI, IOT"
+              content="React, Drawing, Multiplayer, Canvas"
           />
           {/* THEMES */}
           <meta name="color-scheme" content="dark light"/>
@@ -36,11 +40,10 @@ function SiteHead({title = 'Testing'}) {
           <link rel="manifest" href="/manifest.json"/>
           {/* OG TAGS */}
           <meta property="og:type" content="website"/>
-          <meta property="og:url" content="https://nextjs-pwa-template-repo.vercel.app"/>
-          <meta property="og:title" content="The Next.js Progressive Web App Template"/>
+          <meta property="og:title" content={title}/>
           <meta
               property="og:description"
-              content="Dashboard for Visusense AIOT"
+              content={desc}
           />
           <meta
               property="og:image"

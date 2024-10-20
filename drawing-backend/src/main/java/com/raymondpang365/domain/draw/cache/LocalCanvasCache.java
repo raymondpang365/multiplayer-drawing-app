@@ -6,42 +6,47 @@ import java.util.List;
 
 
 public class LocalCanvasCache {
-    
-    private List<List<Pixel>> canvas = null;
 
-    public List<List<Pixel>> getCanvas() {
-        return this.canvas;
-    }
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
+    private Pixel[][] canvas;
 
-    public void setCanvas(List<List<Pixel>> canvas) {
-        this.canvas = canvas;
-    }
-
-   public LocalCanvasCache(int width, int height) {
-        canvas = new ArrayList<>();
-        for (int i = 0; i < height; i++) {
-            List<Pixel> row = new ArrayList<>();
-            for (int j = 0; j < width; j++) {
-                row.add(new Pixel()); // Initialize with 0 (empty)
+    public LocalCanvasCache() {
+        canvas = new Pixel[HEIGHT][WIDTH];
+        for (int i = 0; i < HEIGHT; i++) {
+            for (int j = 0; j < WIDTH; j++) {
+                canvas[i][j] = new Pixel(); // Initialize with default Pixel
             }
-            canvas.add(row);
         }
     }
 
+    public Pixel[][] getCanvas() {
+        return this.canvas;
+    }
 
+    public void setCanvas(Pixel[][] canvas) {
+        this.canvas = canvas;
+    }
 
     public void clearPixel(int x, int y) {
-        if (x >= 0 && x < canvas.get(0).size() && y >= 0 && y < canvas.size()) {
-            canvas.get(y).set(x, new Pixel());
+        if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
+            Pixel pixel = canvas[y][x];
+            pixel.setIsFilled(false);
+            pixel.setColor(null);
         }
     }
 
     public void fillPixel(int x, int y, String color) {
-        if (x >= 0 && x < canvas.get(0).size() && y >= 0 && y < canvas.size()) {
+        if (x >= 0 && x < WIDTH && y >= 0 && y < HEIGHT) {
             Pixel pixel = new Pixel();
             pixel.setIsFilled(true);
             pixel.setColor(color);
-            canvas.get(y).set(x, pixel);
+            canvas[y][x] = pixel;
         }
+    }
+
+    public static void main(String[] args) {
+        LocalCanvasCache cache = new LocalCanvasCache();
+        // Test the canvas
     }
 }

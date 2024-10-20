@@ -1,7 +1,6 @@
-import React, {useRef, useEffect, useState} from 'react'
+import React, {useRef, useEffect, useState, FC, MouseEventHandler} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import st from "./canvas.module.scss"
-import {useRouter} from "next/router";
 import SockJsClient from "react-stomp";
 import templateSt from "@components/DrawingPage/DrawingPage.module.scss"
 import useGridLine from "./grid/useGridLine";
@@ -10,9 +9,9 @@ import {Slider} from "rsuite";
 import 'rsuite/Slider/styles/index.css';
 import classNames from "classnames";
 import useOnPressEsc from "./util/useOnPressEsc";
-import {RootState} from "@redux/reducers";
-import useOutsideDetector from "@components/DrawingPage/useOutsideDetector";
-import { SET_PLAYERS, SET_SESSION_ID } from "@redux/reducers/draw/name";
+import useOutsideDetector from "@components/DrawingPage/canvas/util/useOutsideDetector";
+import {RootState} from "@redux/store";
+import { ActionTypes } from "@redux/type";
 import {
     handleCanvasDragEndHof,
     handleCanvasDragHof,
@@ -23,70 +22,70 @@ import drawLine from "@components/DrawingPage/canvas/util/drawLine";
 import {  PaletteIcon, PencilIcon, EraserIcon, CursorIcon } from "./icons"
 import useScrollByWheelHandler from "@components/DrawingPage/canvas/util/useScrollByWheelHandler";
 import config from "@config"
+import ToolIcon from "@components/DrawingPage/canvas/ToolIcon";
+const { v4: uuidv4 } = require('uuid');
+import {
+    MouseCoords,
+    DrawingAction,
+    HandleCanvasDraggingHofInput,
+    HandleCanvasDragHofInput, TOOLS
+} from "@components/DrawingPage/canvas/type";
+import {ColorResult} from "@uiw/react-color";
 
 const Sketch = dynamic(() => import('@uiw/react-color').then(mod => mod.Sketch), {
     ssr: false
 });
 
-export const tools = {
-    PENCIL: "pencil",
-    ERASER: "eraser",
-    DEFAULT: "default"
-}
 
 
+const Canvas: React.FC = () => {
 
-const ToolIcon = ({_selectedTool, _thickness, _color }) => {
-    switch (_selectedTool) {
-        case tools.ERASER:
-            return       <div className={st.eraser_cursor}
-                              style={{backgroundColor:"#fff", height: _thickness,
-                                  width: _thickness }}/>
-        case tools.PENCIL:
-            return <div className={st.eraser_cursor}
-                        style={{backgroundColor: _color, height: _thickness,
-                            width: _thickness }}/>
-        default:
-            return <CursorIcon/>
-
-    }
-}
-
-const Canvas = () => {
-    const router = useRouter();
-    const [imageHeight, setImageHeight] = useState(1080)
-    const [imageWidth, setImageWidth] = useState(1920)
-    const canvasRef = useRef(null)
+    const imageHeight = 1080
+    const imageWidth = 1920
+    const canvasRef = useRef<HTMLCanvasElement | null>(null)
 
     const dispatch = useDispatch()
 
-    const [zx, setZx] = useState(1)
-    const [color, setColor] = useState("#000");
+    const [zx, setZx] = useState<number>(1)
+    const [color, setColor] = useState<string>("#000000");
 
-    const [isMouseDown, setIsMouseDown] = useState(false)
+    const setHex = (newShade: ColorResult) => {
+        setColor(newShade.hex);
+    }
 
-    const sessionId = useSelector((state: RootState) => state.name.sessionId)
-    const sessionNickname = useSelector((state: RootState) => state.name.sessionNickname)
+    const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
 
-    let clientRef = useRef(null);
+    const sessionId = useSelector((state: RootState) => state.canvasState.sessionId)
+    const sessionNickname = useSelector((state: RootState) => state.canvasState.sessionNickname)
 
-    const [ connected, setConnected] = useState(false)
+    let clientRef = useRef<any>(null);
+
+    const [ connected, setConnected] = useState<boolean>(false)
 
     useEffect(() => {
         if(connected){
-            clientRef.sendMessage(
-                "/ws.new_session",
-                true
-            )
+            const uuid = uuidv4()
+            dispatch({
+                type: ActionTypes.SET_SESSION_ID,
+                sessionId: uuid
+            })
+            if(clientRef != null) {
+                // @ts-ignore
+                clientRef.sendMessage(
+                    "/ws.new_session",
+                    uuid
+                )
+            }
         }
     }, [connected])
 
 
-    const onMouseDown = (event) => {
+    const onMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
         if(sessionId == null) return
 
         setIsMouseDown(true)
-        const bounds = event.target.getBoundingClientRect();
+        const target = event.target as HTMLElement
+        const bounds = target.getBoundingClientRect();
         console.log([event.clientX, event.clientY, bounds.left, bounds.top])
         const x = (event.clientX - bounds.left) / zx;
         const y = (event.clientY - bounds.top) / zx;
@@ -95,24 +94,24 @@ const Canvas = () => {
 
     const canvas = canvasRef.current;
 
-    const [pencilThickness, setPencilThickness] = useState(6)
-    const [eraserThickness, setEraserThickness] = useState(6)
+    const [pencilThickness, setPencilThickness] = useState<number>(6)
+    const [eraserThickness, setEraserThickness] = useState<number>(6)
 
-    const [lastPosition, setLastPosition] = useState({x: 0, y: 0});
+    const [lastPosition, setLastPosition] = useState<{ x: number; y: number }>({x: 0, y: 0});
 
-    const [selectedTool, setSelectedTool] = useState(tools.DEFAULT)
+    const [selectedTool, setSelectedTool] = useState<TOOLS>(TOOLS.DEFAULT)
 
-    const draggableRef = useRef(null)
-    const isInitialized = useRef(false);
-    const mouseCoords = useRef({
+    const draggableRef = useRef<HTMLDivElement | null>(null)
+    const isInitialized = useRef<boolean>(false);
+    const mouseCoords = useRef<MouseCoords>({
         startX: 0,
         startY: 0,
         scrollLeft: 0,
         scrollTop: 0
-    });
+    }) as React.MutableRefObject<MouseCoords>;
 
     useOnPressEsc(() => {
-        setSelectedTool(tools.DEFAULT)
+        setSelectedTool(TOOLS.DEFAULT)
     })
 
     useScrollByWheelHandler({ zx, setZx, draggableRef })
@@ -131,11 +130,10 @@ const Canvas = () => {
         setIsMouseDown(false)
     }
 
-
-    const handleDrag = (event) => {
+    const handleDrag: MouseEventHandler<HTMLCanvasElement> | undefined = (event) => {
         if(sessionId == null) return
-
-        const bounds = event.target.getBoundingClientRect();
+        const target = event.target as HTMLElement;
+        const bounds = target.getBoundingClientRect();
         console.log([event.clientX, event.clientY, bounds.left, bounds.top])
             const offsetX = (event.clientX - bounds.left) / zx;
             const offsetY = (event.clientY - bounds.top) / zx;
@@ -150,23 +148,22 @@ const Canvas = () => {
                 color: color,
                 sessionId: sessionId,
                 sessionNickname: sessionNickname,
-                thickness: selectedTool === tools.PENCIL ? pencilThickness : eraserThickness,
+                thickness: selectedTool === TOOLS.PENCIL ? pencilThickness : eraserThickness,
                 time: Date.now()
-            };
+            }
             if (clientRef != null) {
                 // @ts-ignore
-                // window.alert(JSON.stringify(action))
                 clientRef.sendMessage(
                     "/ws.draw",
                     JSON.stringify(action)
                 )
             }
-        if(isMouseDown && selectedTool !== tools.DEFAULT) {
+        if(isMouseDown && selectedTool !== TOOLS.DEFAULT) {
             setLastPosition({x: offsetX, y: offsetY});
         }
     }
 
-    const colorPickerRef = useRef(null)
+    const colorPickerRef = useRef<HTMLDivElement | null>(null)
 
     useOutsideDetector(colorPickerRef, () => {
         if(colorPickerRef != null) {
@@ -175,15 +172,9 @@ const Canvas = () => {
     })
 
     const bg = useGridLine()
-
     const [ paletteActive, setPaletteActive ] = useState(false)
-
-    const players = useSelector((state: RootState) => state.name.players)
-
-
-
-    console.log(players)
-
+    const players = useSelector((state: RootState) => state.canvasState.players)
+    const userQueue = sessionId != null ? [ `/user/${sessionId}/welcome`] : []
 
     return (
         <div className={templateSt.verticalSplit}>
@@ -192,20 +183,17 @@ const Canvas = () => {
                 <div className={templateSt.page}>
                     <div className={templateSt.reportContentWrapper}>
                         <SockJsClient url={`${config.apiUrl}/ws`}
-                                      onConnect={() => {
+                                      onDisconnect={() => {
+                                      }}
+                                      onConnect={(msg) => {
+                                          console.log(msg)
                                           setConnected(true)
-                                      }
-                        }
-
-                                      topics={[
-                            `/topic/draw`, `/topic/new_session`]}
+                                        }
+                                        }
+                                      topics={[`/topic/draw`, `/topic/disconnect`,  ...userQueue]}
 
                                       onMessage={(msg, topic) => {
-                                          if(topic === `/topic/new_session`){
-                                              dispatch({
-                                                  type: SET_SESSION_ID,
-                                                  sessionId: msg.sessionId
-                                              })
+                                          if(topic ===  `/user/${sessionId}/welcome`){
                                               console.log(msg)
                                               const image = new Image();
                                               image.onload = () => {
@@ -219,11 +207,17 @@ const Canvas = () => {
 
                                               image.src = msg.base64Image;
                                           }
+                                          else if(topic === `/topic/disconnect`){
+                                              dispatch({
+                                                  type: ActionTypes.REMOVE_ONLINE_PLAYER,
+                                                  sessionId: msg.sessionId
+                                              })
+                                          }
                                           else if(topic === `/topic/draw`) {
                                               // window.alert(JSON.stringify(msg))
                                               if (canvas != null) {
                                                   const ctx = canvas.getContext('2d');
-                                                  if (msg.isMouseDown && msg.selectedTool !== tools.DEFAULT) {
+                                                  if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
                                                       drawLine({
                                                           ctx: ctx,
                                                           x1: msg.x1,
@@ -237,7 +231,7 @@ const Canvas = () => {
                                                   }
                                               }
                                               const player = {
-                                                  [sessionId]: {
+                                                  [msg.sessionId]: {
                                                       sessionId: msg.sessionId,
                                                       sessionNickname: msg.sessionNickname,
                                                       x: msg.x2,
@@ -248,7 +242,8 @@ const Canvas = () => {
                                                   }
                                               }
                                               dispatch({
-                                                  type: SET_PLAYERS, player: player
+                                                  type: ActionTypes.SET_PLAYERS,
+                                                  player: player
                                               })
                                           }
                                       }}
@@ -258,11 +253,16 @@ const Canvas = () => {
                         <div className={st.canvasContainer}>
                             <div ref={draggableRef}
                                  onMouseDown={handleCanvasDragStartHof({
-                                     draggableRef, selectedTool,setIsMouseDown, mouseCoords})}
+                                     draggableRef, selectedTool, setIsMouseDown, mouseCoords
+                                 } as HandleCanvasDragHofInput)}
                                  onMouseUp={handleCanvasDragEndHof(
-                                     { draggableRef, selectedTool, mouseCoords, setIsMouseDown})}
+                                     {
+                                         draggableRef, selectedTool, mouseCoords, setIsMouseDown
+                                     } as HandleCanvasDragHofInput)}
                                  onMouseMove={handleCanvasDragHof(
-                                     { draggableRef, selectedTool, mouseCoords, isMouseDown})}
+                                     {
+                                         draggableRef, selectedTool, mouseCoords, isMouseDown
+                                     } as HandleCanvasDraggingHofInput)}
                                  className={st.outerContainer} style={{
                             }}>
                                 <div style={{
@@ -285,7 +285,10 @@ const Canvas = () => {
                                                 console.log(p)
                                                 return <div className={st.playerIndicator}
                                                             style={{ top: p.y, left: p.x }}>
-                                                    <ToolIcon _selectedTool={p.selectedTool} _thickness={p.thickness} _color={p.color}/>
+                                                    <ToolIcon
+                                                        _selectedTool={p.selectedTool}
+                                                        _thickness={p.thickness}
+                                                        _color={p.color}/>
 
                                                     <span  className={st.playerIndicator_username}> { p.sessionNickname } </span>
                                                 </div>
@@ -299,9 +302,9 @@ const Canvas = () => {
 
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
-                                    <div className={selectedTool === tools.PENCIL ?
-                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(tools.PENCIL)}>
-                                        <div className={selectedTool === tools.PENCIL ?
+                                    <div className={selectedTool === TOOLS.PENCIL ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
+                                        <div className={selectedTool === TOOLS.PENCIL ?
                                             classNames(st.toolBar_button, st.active) : st.toolBar_button} >
                                             <PencilIcon/>
                                         </div>
@@ -313,11 +316,9 @@ const Canvas = () => {
 
                                             {paletteActive ?
                                                 <Sketch
-                                                    style={{marginLeft: 20, position: 'absolute', bottom: 30, left: 0}}
-                                                    color={color}
-                                                    onChange={(color) => {
-                                                        setColor(color.hex);
-                                                    }}
+                                                    className={st.sketch_component}
+                                                    color={color as any}
+                                                    onChange={setHex as any}
                                                 /> : null
 
                                             }
@@ -339,10 +340,10 @@ const Canvas = () => {
                                             stp={2}
                                         />
                                     </div>
-                                    <div className={selectedTool === tools.ERASER ?
-                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(tools.ERASER)}>
-                                        <div className={selectedTool === tools.ERASER ?
-                                            classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(tools.ERASER)}>
+                                    <div className={selectedTool === TOOLS.ERASER ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>
+                                        <div className={selectedTool === TOOLS.ERASER ?
+                                            classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(TOOLS.ERASER)}>
                                             <EraserIcon/>
                                         </div>
                                         <div className={st.toolBar_preview}
@@ -362,10 +363,10 @@ const Canvas = () => {
                                     </div>
                                 </div>
                                 <div className={st.toolBar}>
-                                    <div className={selectedTool === tools.DEFAULT ?
-                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(tools.DEFAULT)}>
+                                    <div className={selectedTool === TOOLS.DEFAULT ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.DEFAULT)}>
                                         <div className={st.toolBar_button}
-                                             onClick={() => setSelectedTool(tools.DEFAULT)}>
+                                             onClick={() => setSelectedTool(TOOLS.DEFAULT)}>
                                             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                 <path d="M5 9L2 12M2 12L5 15M2 12H22M9 5L12 2M12 2L15 5M12 2V22M15 19L12 22M12 22L9 19M19 9L22 12M22 12L19 15" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                                             </svg>
@@ -390,14 +391,10 @@ const Canvas = () => {
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
-
         </div>
-
-
     )
 }
 

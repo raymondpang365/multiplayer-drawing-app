@@ -1,8 +1,16 @@
-import {tools} from "@components/DrawingPage/canvas/Canvas";
 
-export const handleCanvasDragStartHof = ({draggableRef, selectedTool, mouseCoords, setIsMouseDown}) => {
-    return (e) => {
-        if (selectedTool !== tools.DEFAULT || !draggableRef.current) return
+import {HandleCanvasDraggingHofInput, HandleCanvasDragHofInput, TOOLS} from "@components/DrawingPage/canvas/type";
+import React from 'react';
+
+export const handleCanvasDragStartHof = (
+    {
+        draggableRef,
+        selectedTool,
+        mouseCoords,
+        setIsMouseDown
+    }: HandleCanvasDragHofInput) => {
+    return (e : React.MouseEvent) => {
+        if (selectedTool !== TOOLS.DEFAULT || !draggableRef.current) return
         const startX = e.pageX - draggableRef.current.offsetLeft;
         const startY = e.pageY - draggableRef.current.offsetTop;
         const scrollLeft = draggableRef.current.scrollLeft;
@@ -12,18 +20,21 @@ export const handleCanvasDragStartHof = ({draggableRef, selectedTool, mouseCoord
         document.body.style.cursor = "grabbing"
     }
 }
-export const handleCanvasDragEndHof = ({ draggableRef, selectedTool, mouseCoords, setIsMouseDown}) => {
+export const handleCanvasDragEndHof =
+    ({ draggableRef, selectedTool, mouseCoords, setIsMouseDown}: HandleCanvasDragHofInput) => {
     return () => {
-        if (selectedTool !== tools.DEFAULT) return
+        if (selectedTool !== TOOLS.DEFAULT) return
         setIsMouseDown(false)
         mouseCoords.current = {startX: 0, startY: 0, scrollLeft: 0, scrollTop: 0}
         if (!draggableRef.current) return
         document.body.style.cursor = "default"
     }
 }
-export const handleCanvasDragHof = ({ draggableRef, selectedTool, mouseCoords, isMouseDown}) => {
-    return (e) => {
-        if (selectedTool !== tools.DEFAULT || !isMouseDown || !draggableRef.current) return;
+export const handleCanvasDragHof = (
+    { draggableRef, selectedTool,
+        mouseCoords, isMouseDown}: HandleCanvasDraggingHofInput) => {
+    return (e : React.MouseEvent) => {
+        if (selectedTool !== TOOLS.DEFAULT || !isMouseDown || !draggableRef.current) return;
         e.preventDefault();
         const x = e.pageX - draggableRef.current.offsetLeft;
         const y = e.pageY - draggableRef.current.offsetTop;

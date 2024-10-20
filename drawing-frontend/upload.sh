@@ -1,1 +1,0 @@
-aws s3 cp out s3://pretech-ai-demo-web/ --recursive --exclude "*/" --include "*"

@@ -3,10 +3,14 @@ package com.raymondpang365.domain.draw;
 import com.raymondpang365.domain.draw.document.DrawingAction;
 import com.raymondpang365.domain.draw.dto.DrawingActionDto;
 import com.raymondpang365.domain.draw.dto.NewSessionResponse;
+import com.raymondpang365.domain.draw.dto.SessionEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.messaging.handler.annotation.Header;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,6 +21,8 @@ public class DrawingController {
     @Autowired
     DrawingService drawingService;
 
+    @Autowired
+    SimpMessagingTemplate messagingTemplate;
 
     @MessageMapping("/ws.draw")
     @SendTo("/topic/draw")
@@ -39,15 +45,13 @@ public class DrawingController {
 
 
     @MessageMapping("/ws.new_session")
-    @SendTo("/topic/new_session")
-    public NewSessionResponse createNewSession(Boolean drawingActionDto) throws Exception {
-        String uuid = UUID.randomUUID().toString().replace("-", "");
+    public void createNewSession(String uuid) throws Exception {
         NewSessionResponse newSessionResponse = new NewSessionResponse();
-        newSessionResponse.setSessionId(uuid);
-        List<DrawingAction> drawingActions = drawingService.getFullHistory();
-        newSessionResponse.setRecentServerActivities(drawingActions);
         String base64Image = drawingService.getCanvasAsImage();
         newSessionResponse.setBase64Image(base64Image);
-        return newSessionResponse;
+        //
+        // Send the session ID back to the connected user
+        messagingTemplate.convertAndSendToUser(uuid, "/welcome", newSessionResponse);
+
     }
 }

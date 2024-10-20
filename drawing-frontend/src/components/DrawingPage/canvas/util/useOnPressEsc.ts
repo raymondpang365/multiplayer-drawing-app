@@ -1,8 +1,8 @@
 import {useCallback, useEffect} from "react";
 
 
-const useOnPressEsc = (onPressEsc) => {
-    const escFunction = useCallback((event) => {
+const useOnPressEsc = (onPressEsc: () => void): void => {
+    const escFunction = useCallback((event: KeyboardEvent) => {
         if (event.key === "Escape") {
             //Do whatever when esc is pressed
             onPressEsc()

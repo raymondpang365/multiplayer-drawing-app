@@ -1,7 +1,8 @@
 import {useEffect} from "react";
+import {UseScrollByWheelHandlerProps} from "@components/DrawingPage/canvas/type";
 
-const useScrollByWheelHandler = ({ zx, setZx, draggableRef }) => {
-    const handleZoom = function (e) {
+const useScrollByWheelHandler = ({ zx, setZx, draggableRef }: UseScrollByWheelHandlerProps) => {
+    const handleZoom = function (e: WheelEvent) {
         var dir;
         if (!e.ctrlKey) {
             return;

@@ -1,47 +1,17 @@
-import {createStore, applyMiddleware} from 'redux';
+import {createStore, applyMiddleware, combineReducers, Store} from 'redux';
 import logger from 'redux-logger';
-import createSagaMiddleware from 'redux-saga';
-import {createWrapper} from 'next-redux-wrapper';
-import reducer from './reducers';
-import rootSaga from './actions';
+import {createWrapper, MakeStore} from 'next-redux-wrapper';
+import canvasState from "@redux/canvasState";
 
-const makeStore = (context) => {
-  // 1: Create the middleware
-  const sagaMiddleware = createSagaMiddleware();
 
-  const makeConfiguredStore = (reducer) => {
-    // 2: Add an extra parameter for applying middleware:
-    // const middlewares = process.env.NODE_ENV === 'development'
-    //   ?  applyMiddleware(sagaMiddleware, logger) : applyMiddleware(sagaMiddleware);
-    const store = createStore(reducer, applyMiddleware(sagaMiddleware, logger));
-    // 3: Run your sagas on server
-    (store as any).sagaTask = sagaMiddleware.run(rootSaga);
-    return store
-  };
+const reducers = combineReducers({
+    canvasState
+});
 
-  const isServer = typeof window === 'undefined';
+export type RootState = ReturnType<typeof reducers>;
 
-  if (isServer) {
-    return makeConfiguredStore(reducer);
-  } else {
-    const {persistStore, persistReducer} = require('redux-persist');
-    const storage = require('redux-persist/lib/storage').default;
+const makeStore : MakeStore<Store<RootState>> = () => {
+    return createStore(reducers, applyMiddleware(logger));
+}
 
-    const persistConfig = {
-      key: 'nextjs',
-      whitelist: ['browserSession', 'cartItems', 'wishItems', 'auth'], // make sure it does not clash with server keys
-      storage
-    };
-
-    const persistedReducer = persistReducer(persistConfig, reducer);
-    const store = makeConfiguredStore(persistedReducer);
-
-    (store as any).__persistor = persistStore(store); // Nasty hack
-
-    return store;
-  }
-
-  // 4: now return the store:
-};
-
-export const wrapper = createWrapper(makeStore);
+export const wrapper = createWrapper<Store<RootState>>(makeStore);

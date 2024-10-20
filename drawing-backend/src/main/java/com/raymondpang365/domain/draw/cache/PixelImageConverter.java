@@ -16,14 +16,14 @@ import java.util.List;
 @Service
 public class PixelImageConverter {
 
-    public String getPixelImage(List<List<Pixel>> canvas) throws IOException {
-        int height = canvas.size();
-        int width = canvas.get(0).size();
+    public String getPixelImage(Pixel[][] canvas) throws IOException {
+        int height = canvas.length;
+        int width = canvas[0].length;
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
-                Pixel pixel = canvas.get(y).get(x);
+                Pixel pixel = canvas[y][x];
                 if (pixel.getIsFilled()) {
                     image.setRGB(x, y, Color.decode(pixel.getColor()).getRGB());
                 } else {
@@ -40,7 +40,7 @@ public class PixelImageConverter {
         return "data:image/png;base64," + base64Image;
     }
 
-    public List<List<Pixel>> decodePixelImage(String base64Image) throws IOException {
+    public Pixel[][] decodePixelImage(String base64Image) throws IOException {
         // Remove the data URL prefix
         String base64Data = base64Image.split(",")[1];
 
@@ -53,10 +53,9 @@ public class PixelImageConverter {
 
         int height = image.getHeight();
         int width = image.getWidth();
-        List<List<Pixel>> canvas = new ArrayList<>();
+        Pixel[][] canvas =  new Pixel[height][width];
 
         for (int y = 0; y < height; y++) {
-            List<Pixel> row = new ArrayList<>();
             for (int x = 0; x < width; x++) {
                 int argb = image.getRGB(x, y);
                 Color color = new Color(argb, true);
@@ -72,9 +71,8 @@ public class PixelImageConverter {
                     pixel.setColor( null);
                 }
 
-                row.add(pixel);
+                canvas[y][x] = pixel;
             }
-            canvas.add(row);
         }
 
         return canvas;

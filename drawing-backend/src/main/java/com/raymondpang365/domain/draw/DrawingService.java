@@ -28,10 +28,7 @@ public class DrawingService {
     @Autowired
     SnapshotRepository snapshotRepository;
 
-
-    private MongoTemplate mongoTemplate;
-
-    LocalCanvasCache localCanvasCache = new LocalCanvasCache(1920, 1080);
+    LocalCanvasCache localCanvasCache = new LocalCanvasCache();
 
     @PostConstruct
     public void init() throws IOException{
@@ -44,7 +41,7 @@ public class DrawingService {
             drawingActions = drawingRepository.findByTimeGreaterThan(
                     snapshot.getTimeOfLastAction()
             );
-            List<List<Pixel>> canvas =  pixelImageConverter.decodePixelImage(snapshot.getBase64Image());
+            Pixel[][] canvas =  pixelImageConverter.decodePixelImage(snapshot.getBase64Image());
             localCanvasCache.setCanvas(canvas);
         }
         if(drawingActions.size() > 0) {
@@ -81,11 +78,6 @@ public class DrawingService {
         drawingAction.setDrawingAction(drawingActionDto);
         drawingRepository.save(drawingAction);
     }
-
-    public List<DrawingAction> getFullHistory() {
-        return drawingRepository.findAll();
-    }
-
 
     public void drawLine(int x1, int y1, int x2, int y2,
                          int thickness, String color, String tool) {
