@@ -15,4 +15,5 @@ curl.sh
 *.tar.gz
 *.jpg
 *.mp4
+application.log
 .DS_Store

@@ -60,9 +60,13 @@ public class SecurityConfig {
 
     @Bean
     @Order(1)
-    public SecurityFilterChain otherSecurityFilterChain(HttpSecurity http, @Qualifier("corsConfigurationSource") CorsConfigurationSource source) throws Exception {
+    public SecurityFilterChain otherSecurityFilterChain(
+            HttpSecurity http,
+            @Qualifier("corsConfigurationSource") CorsConfigurationSource source
+    ) throws Exception {
         String[] paths = new String[]{
                 "/",
+                "/register-session"
         };
 
 

@@ -1,9 +1,13 @@
+import {RegisterSessionAction} from "@redux/registerSession/registerSessionState";
+
 export enum ActionTypes {
     SET_SESSION_ID = 'SET_SESSION_ID',
     SET_SESSION_NICKNAME = 'SET_SESSION_NICKNAME',
-    SET_PLAYERS = 'SET_PLAYERS',
-    REMOVE_ONLINE_PLAYER = 'REMOVE_ONLINE_PLAYER'
+    SET_PLAYER = 'SET_PLAYER',
+    REMOVE_ONLINE_PLAYER = 'REMOVE_ONLINE_PLAYER',
+    SET_ALL_PLAYERS = 'SET_ALL_PLAYERS'
 }
+
 
 export interface State {
     sessionId: string | null;
@@ -21,9 +25,14 @@ interface SetSessionNicknameAction {
     sessionNickname: string;
 }
 
-interface SetPlayersAction {
-    type: ActionTypes.SET_PLAYERS;
+interface SetPlayerAction {
+    type: ActionTypes.SET_PLAYER;
     player: Record<string, any>;
+}
+
+interface SetAllPlayersAction {
+    type: ActionTypes.SET_ALL_PLAYERS;
+    players: Record<string, any>;
 }
 
 interface RemoveOnlinePlayerAction {
@@ -34,5 +43,7 @@ interface RemoveOnlinePlayerAction {
 export type Action =
     | SetSessionIdAction
     | SetSessionNicknameAction
-    | SetPlayersAction
-    | RemoveOnlinePlayerAction;
+    | SetPlayerAction
+    | SetAllPlayersAction
+    | RemoveOnlinePlayerAction
+    | RegisterSessionAction;

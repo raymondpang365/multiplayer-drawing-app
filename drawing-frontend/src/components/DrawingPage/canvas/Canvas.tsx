@@ -1,7 +1,7 @@
 import React, {useRef, useEffect, useState, FC, MouseEventHandler} from 'react'
 import {useDispatch, useSelector} from "react-redux";
 import st from "./canvas.module.scss"
-import SockJsClient from "react-stomp";
+import SockJsClient from "@components/SockJsClient";
 import templateSt from "@components/DrawingPage/DrawingPage.module.scss"
 import useGridLine from "./grid/useGridLine";
 import dynamic from "next/dynamic";
@@ -31,12 +31,20 @@ import {
     HandleCanvasDragHofInput, TOOLS
 } from "@components/DrawingPage/canvas/type";
 import {ColorResult} from "@uiw/react-color";
+import axios from "axios";
+import {REGISTER_SESSION} from "@redux/registerSession/registerSessionAction";
 
 const Sketch = dynamic(() => import('@uiw/react-color').then(mod => mod.Sketch), {
     ssr: false
 });
 
+enum REGISTER_SESSION_STATUS {
+    INVALID,
+    REQUESTING,
+    SUCCESS,
+    FAILURE
 
+}
 
 const Canvas: React.FC = () => {
 
@@ -47,7 +55,11 @@ const Canvas: React.FC = () => {
     const dispatch = useDispatch()
 
     const [zx, setZx] = useState<number>(1)
-    const color ="#000000";
+    const [color, setColor] = useState<string>("#000000");
+
+    const setHex = (newShade: ColorResult) => {
+        setColor(newShade.hex);
+    }
 
     const [isMouseDown, setIsMouseDown] = useState<boolean>(false)
 
@@ -57,6 +69,26 @@ const Canvas: React.FC = () => {
     let clientRef = useRef<any>(null);
 
     const [ connected, setConnected] = useState<boolean>(false)
+
+    const [ registerSessionStatus, setRegisterSessionStatus ] = useState(
+        REGISTER_SESSION_STATUS.INVALID
+    )
+
+    useEffect( () => {
+        dispatch({ type: REGISTER_SESSION })
+    }, [])
+
+    useEffect(() => {
+        if(connected && sessionId != null){
+            if(clientRef != null) {
+                // @ts-ignore
+                clientRef.sendMessage(
+                    "/ws.new_session",
+                    sessionId
+                )
+            }
+        }
+    }, [connected, sessionId])
 
 
     const onMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -73,7 +105,7 @@ const Canvas: React.FC = () => {
 
     const canvas = canvasRef.current;
 
-    const pencilThickness = 6
+    const [pencilThickness, setPencilThickness] = useState<number>(6)
     const [eraserThickness, setEraserThickness] = useState<number>(6)
 
     const [lastPosition, setLastPosition] = useState<{ x: number; y: number }>({x: 0, y: 0});
@@ -161,7 +193,84 @@ const Canvas: React.FC = () => {
             <div className={templateSt.reportContainer}>
                 <div className={templateSt.page}>
                     <div className={templateSt.reportContentWrapper}>
+                        <SockJsClient url={`${config.apiUrl}/ws`}
+                                      onDisconnect={() => {
+                                      }}
+                                      onConnect={(msg) => {
+                                          console.log(msg)
+                                          setConnected(true)
+                                        }
+                                        }
+                                      topics={[`/topic/draw`, "/user/queue/sessionInfo", `/topic/disconnect`,  ...userQueue]}
 
+                                      onMessage={(msg, topic) => {
+                                          console.log(msg)
+                                          if(topic === "/user/queue/sessionInfo"){
+                                            console.log(msg)
+                                          }
+                                          else if(topic ===  `/user/${sessionId}/welcome`){
+                                              console.log(msg)
+                                              dispatch({
+                                                  type: ActionTypes.SET_ALL_PLAYERS,
+                                                  players: msg.players
+                                              })
+
+                                              const image = new Image();
+                                              image.onload = () => {
+                                                  const context = canvas.getContext('2d');
+
+                                                  canvas.width = image.width;
+                                                  canvas.height = image.height;
+
+                                                  context.drawImage(image, 0, 0);
+                                              };
+
+                                              image.src = msg.base64Image;
+                                          }
+                                          else if(topic === `/topic/disconnect`){
+                                              console.log(msg)
+                                              dispatch({
+                                                  type: ActionTypes.REMOVE_ONLINE_PLAYER,
+                                                  sessionId: msg.sessionId
+                                              })
+                                          }
+                                          else if(topic === `/topic/draw`) {
+                                              // window.alert(JSON.stringify(msg))
+                                              if (canvas != null) {
+                                                  const ctx = canvas.getContext('2d');
+                                                  if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
+                                                      drawLine({
+                                                          ctx: ctx,
+                                                          x1: msg.x1,
+                                                          y1: msg.y1,
+                                                          x2: msg.x2,
+                                                          y2: msg.y2,
+                                                          _color: msg.color,
+                                                          _selectedTool: msg.selectedTool,
+                                                          _thickness: msg.thickness
+                                                      })
+                                                  }
+                                              }
+                                              const player = {
+                                                  [msg.sessionId]: {
+                                                      sessionId: msg.sessionId,
+                                                      sessionNickname: msg.sessionNickname,
+                                                      x: msg.x2,
+                                                      y: msg.y2,
+                                                      color: msg.color,
+                                                      selectedTool: msg.selectedTool,
+                                                      thickness: msg.thickness
+                                                  }
+                                              }
+                                              dispatch({
+                                                  type: ActionTypes.SET_PLAYER,
+                                                  player: player
+                                              })
+                                          }
+                                      }}
+                                      ref={(client) => {
+                                          clientRef = client
+                                      }}/>
                         <div className={st.canvasContainer}>
                             <div ref={draggableRef}
                                  onMouseDown={handleCanvasDragStartHof({
@@ -214,10 +323,43 @@ const Canvas: React.FC = () => {
 
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
-                                    <div className={st.group}>
-                                        <div className={st.toolBar_button}>
+                                    <div className={selectedTool === TOOLS.PENCIL ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
+                                        <div className={selectedTool === TOOLS.PENCIL ?
+                                            classNames(st.toolBar_button, st.active) : st.toolBar_button} >
                                             <PencilIcon/>
                                         </div>
+                                        <div ref={colorPickerRef} className={st.toolBar_palette_button}
+                                             onClick={() => setPaletteActive(true)}>
+                                            <PaletteIcon/>
+                                            <div className={st.toolBar_button_paletteColor}
+                                                 style={{backgroundColor: color}}/>
+
+                                            {paletteActive ?
+                                                <Sketch
+                                                    className={st.sketch_component}
+                                                    color={color as any}
+                                                    onChange={setHex as any}
+                                                /> : null
+
+                                            }
+
+                                        </div>
+                                        <div className={st.toolBar_preview}
+                                             style={{backgroundColor: color, height: pencilThickness,
+                                                 width: pencilThickness }}/>
+
+                                        <Slider
+                                            style={{ width: '8rem'}}
+                                            progress
+                                            defaultValue={pencilThickness}
+                                            onChange={value => {
+                                                setPencilThickness(value)
+                                            }}
+                                            max={20}
+                                            min={2}
+                                            step={2}
+                                        />
                                     </div>
                                     <div className={selectedTool === TOOLS.ERASER ?
                                         classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>
