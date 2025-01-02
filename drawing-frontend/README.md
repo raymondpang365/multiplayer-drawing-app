@@ -38,3 +38,15 @@
     For development environment, use `yarn dev` <br>
     For production environment, use  `yarn start` <br>
 
+### Workshop
+
+| Branch(Checkpoint) | Description               |
+|--------------------|---------------------------|
+| cp2.1              | Change Thickness          |
+| cp2.2              | Change Color              |
+| cp2.3              | Change Tool               |
+| cp4.1              | Setting up WS connection  |
+| cp4.2              | Setting up UUID           |
+| cp5                | Drawing on canvas         |
+| cp6                | Tracking state of players |
+
