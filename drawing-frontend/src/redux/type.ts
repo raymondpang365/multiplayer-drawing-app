@@ -25,11 +25,6 @@ interface SetSessionNicknameAction {
     sessionNickname: string;
 }
 
-interface SetPlayerAction {
-    type: ActionTypes.SET_PLAYER;
-    player: Record<string, any>;
-}
-
 interface SetAllPlayersAction {
     type: ActionTypes.SET_ALL_PLAYERS;
     players: Record<string, any>;
@@ -40,10 +35,16 @@ interface RemoveOnlinePlayerAction {
     sessionId: string;
 }
 
+// section 5
+// interface SetPlayerAction {
+//     type: ActionTypes.SET_PLAYER;
+//     player: Record<string, any>;
+// }
+
 export type Action =
     | SetSessionIdAction
     | SetSessionNicknameAction
-    | SetPlayerAction
     | SetAllPlayersAction
     | RemoveOnlinePlayerAction
-    | RegisterSessionAction;
+    | RegisterSessionAction
+ // section 5   | SetPlayerAction

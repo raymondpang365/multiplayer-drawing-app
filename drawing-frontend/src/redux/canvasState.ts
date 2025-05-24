@@ -12,14 +12,15 @@ export default (state = initialState, action : Action): State => {
             return {...state, sessionId: action.sessionId}
         case ActionTypes.SET_SESSION_NICKNAME:
             return {...state, sessionNickname: action.sessionNickname}
-        case ActionTypes.SET_PLAYER:
-            return {...state, players: {...state.players, ...action.player}}
         case ActionTypes.SET_ALL_PLAYERS:
             return {...state, players: action.players}
         case ActionTypes.REMOVE_ONLINE_PLAYER:
             const existing = { ...state.players }
             delete existing[action.sessionId]
             return { ...state, players: existing }
+        // section 5
+        // case ActionTypes.SET_PLAYER:
+        //     return {...state, players: {...state.players, ...action.player}}
 
         default:
             return state

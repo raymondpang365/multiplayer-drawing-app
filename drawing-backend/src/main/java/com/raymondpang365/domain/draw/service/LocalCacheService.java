@@ -80,20 +80,21 @@ public class LocalCacheService {
 
     public LocalPlayerStateCache getLocalPlayerStateCache() { return localPlayerStateCache; }
 
-    public void saveDrawingAction(DrawingActionDto drawingActionDto){
-        localPlayerStateCache.setPlayerDrawingState(drawingActionDto);
-        if(drawingActionDto.getIsMouseDown() && !drawingActionDto.getSelectedTool().equals(Tools.DEFAULT.label)) {
-            localCanvasCache.drawLine(
-                    drawingActionDto.getX1(),
-                    drawingActionDto.getY1(),
-                    drawingActionDto.getX2(),
-                    drawingActionDto.getY2(),
-                    drawingActionDto.getThickness(),
-                    drawingActionDto.getColor(),
-                    drawingActionDto.getSelectedTool()
-            );
-        }
-    }
+//    section 3
+//    public void saveDrawingAction(DrawingActionDto drawingActionDto){
+//        localPlayerStateCache.setPlayerDrawingState(drawingActionDto);
+//        if(drawingActionDto.getIsMouseDown() && !drawingActionDto.getSelectedTool().equals(Tools.DEFAULT.label)) {
+//            localCanvasCache.drawLine(
+//                    drawingActionDto.getX1(),
+//                    drawingActionDto.getY1(),
+//                    drawingActionDto.getX2(),
+//                    drawingActionDto.getY2(),
+//                    drawingActionDto.getThickness(),
+//                    drawingActionDto.getColor(),
+//                    drawingActionDto.getSelectedTool()
+//            );
+//        }
+//    }
 
 
 }

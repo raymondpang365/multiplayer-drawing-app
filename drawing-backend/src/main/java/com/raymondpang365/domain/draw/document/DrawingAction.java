@@ -22,17 +22,18 @@ public class DrawingAction {
     private String sessionNickname;
     private Long time;
 
-    public void setDrawingAction(DrawingActionDto drawingActionDto){
-        setX1(drawingActionDto.getX1());
-        setX2(drawingActionDto.getX2());
-        setY1(drawingActionDto.getY1());
-        setY2(drawingActionDto.getY2());
-        setColor(drawingActionDto.getColor());
-        setThickness(drawingActionDto.getThickness());
-        setSelectedTool(drawingActionDto.getSelectedTool());
-        setIsMouseDown(drawingActionDto.getIsMouseDown());
-        setSessionId(drawingActionDto.getSessionId());
-        setSessionNickname(drawingActionDto.getSessionNickname());
-        setTime(drawingActionDto.getTime());
-    }
+//    section 3
+//    public void setDrawingAction(DrawingActionDto drawingActionDto){
+//        setX1(drawingActionDto.getX1());
+//        setX2(drawingActionDto.getX2());
+//        setY1(drawingActionDto.getY1());
+//        setY2(drawingActionDto.getY2());
+//        setColor(drawingActionDto.getColor());
+//        setThickness(drawingActionDto.getThickness());
+//        setSelectedTool(drawingActionDto.getSelectedTool());
+//        setIsMouseDown(drawingActionDto.getIsMouseDown());
+//        setSessionId(drawingActionDto.getSessionId());
+//        setSessionNickname(drawingActionDto.getSessionNickname());
+//        setTime(drawingActionDto.getTime());
+//    }
 }

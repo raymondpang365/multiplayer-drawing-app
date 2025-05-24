@@ -78,17 +78,18 @@ const Canvas: React.FC = () => {
         dispatch({ type: REGISTER_SESSION })
     }, [])
 
-    useEffect(() => {
-        if(connected && sessionId != null){
-            if(clientRef != null) {
-                // @ts-ignore
-                clientRef.sendMessage(
-                    "/ws.new_session",
-                    sessionId
-                )
-            }
-        }
-    }, [connected, sessionId])
+    // section 4
+    // useEffect(() => {
+    //     if(connected && sessionId != null){
+    //         if(clientRef != null) {
+    //             // @ts-ignore
+    //             clientRef.sendMessage(
+    //                 "/ws.new_session",
+    //                 sessionId
+    //             )
+    //         }
+    //     }
+    // }, [connected, sessionId])
 
 
     const onMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -235,37 +236,39 @@ const Canvas: React.FC = () => {
                                               })
                                           }
                                           else if(topic === `/topic/draw`) {
-                                              // window.alert(JSON.stringify(msg))
-                                              if (canvas != null) {
-                                                  const ctx = canvas.getContext('2d');
-                                                  if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
-                                                      drawLine({
-                                                          ctx: ctx,
-                                                          x1: msg.x1,
-                                                          y1: msg.y1,
-                                                          x2: msg.x2,
-                                                          y2: msg.y2,
-                                                          _color: msg.color,
-                                                          _selectedTool: msg.selectedTool,
-                                                          _thickness: msg.thickness
-                                                      })
-                                                  }
-                                              }
-                                              const player = {
-                                                  [msg.sessionId]: {
-                                                      sessionId: msg.sessionId,
-                                                      sessionNickname: msg.sessionNickname,
-                                                      x: msg.x2,
-                                                      y: msg.y2,
-                                                      color: msg.color,
-                                                      selectedTool: msg.selectedTool,
-                                                      thickness: msg.thickness
-                                                  }
-                                              }
-                                              dispatch({
-                                                  type: ActionTypes.SET_PLAYER,
-                                                  player: player
-                                              })
+                                              // section 4
+                                              // if (canvas != null) {
+                                              //     const ctx = canvas.getContext('2d');
+                                              //     if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
+                                              //         drawLine({
+                                              //             ctx: ctx,
+                                              //             x1: msg.x1,
+                                              //             y1: msg.y1,
+                                              //             x2: msg.x2,
+                                              //             y2: msg.y2,
+                                              //             _color: msg.color,
+                                              //             _selectedTool: msg.selectedTool,
+                                              //             _thickness: msg.thickness
+                                              //         })
+                                              //     }
+                                              // }
+
+                                              // section 5
+                                              // const player = {
+                                              //     [msg.sessionId]: {
+                                              //         sessionId: msg.sessionId,
+                                              //         sessionNickname: msg.sessionNickname,
+                                              //         x: msg.x2,
+                                              //         y: msg.y2,
+                                              //         color: msg.color,
+                                              //         selectedTool: msg.selectedTool,
+                                              //         thickness: msg.thickness
+                                              //     }
+                                              // }
+                                              // dispatch({
+                                              //     type: ActionTypes.SET_PLAYER,
+                                              //     player: player
+                                              // })
                                           }
                                       }}
                                       ref={(client) => {
@@ -299,22 +302,22 @@ const Canvas: React.FC = () => {
                                             className={st.itemCanvas} onMouseDown={onMouseDown} onMouseMove={handleDrag}
                                             onMouseUp={handleMouseUp}
                                             ref={canvasRef}/>
+                                    {/* section 5 */}
+                                    {/*{*/}
+                                    {/*    Object.keys(players).map(k => players[k])*/}
+                                    {/*        .map( p => {*/}
+                                    {/*            console.log(p)*/}
+                                    {/*            return <div className={st.playerIndicator}*/}
+                                    {/*                        style={{ top: p.y, left: p.x }}>*/}
+                                    {/*                <ToolIcon*/}
+                                    {/*                    _selectedTool={p.selectedTool}*/}
+                                    {/*                    _thickness={p.thickness}*/}
+                                    {/*                    _color={p.color}/>*/}
 
-                                    {
-                                        Object.keys(players).map(k => players[k])
-                                            .map( p => {
-                                                console.log(p)
-                                                return <div className={st.playerIndicator}
-                                                            style={{ top: p.y, left: p.x }}>
-                                                    <ToolIcon
-                                                        _selectedTool={p.selectedTool}
-                                                        _thickness={p.thickness}
-                                                        _color={p.color}/>
-
-                                                    <span  className={st.playerIndicator_username}> { p.sessionNickname } </span>
-                                                </div>
-                                            } )
-                                    }
+                                    {/*                <span  className={st.playerIndicator_username}> { p.sessionNickname } </span>*/}
+                                    {/*            </div>*/}
+                                    {/*        } )*/}
+                                    {/*}*/}
                                     <div style={{backgroundImage: bg,
                                         width: '100%', height: '100%', zIndex: 2}}
                                          className={st.itemCanvas}/>
@@ -323,65 +326,66 @@ const Canvas: React.FC = () => {
 
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
-                                    <div className={selectedTool === TOOLS.PENCIL ?
-                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
-                                        <div className={selectedTool === TOOLS.PENCIL ?
-                                            classNames(st.toolBar_button, st.active) : st.toolBar_button} >
-                                            <PencilIcon/>
-                                        </div>
-                                        <div ref={colorPickerRef} className={st.toolBar_palette_button}
-                                             onClick={() => setPaletteActive(true)}>
-                                            <PaletteIcon/>
-                                            <div className={st.toolBar_button_paletteColor}
-                                                 style={{backgroundColor: color}}/>
+                                    {/*section 2*/}
+                                    {/*<div className={selectedTool === TOOLS.PENCIL ?*/}
+                                    {/*    classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>*/}
+                                    {/*    <div className={selectedTool === TOOLS.PENCIL ?*/}
+                                    {/*        classNames(st.toolBar_button, st.active) : st.toolBar_button} >*/}
+                                    {/*        <PencilIcon/>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div ref={colorPickerRef} className={st.toolBar_palette_button}*/}
+                                    {/*         onClick={() => setPaletteActive(true)}>*/}
+                                    {/*        <PaletteIcon/>*/}
+                                    {/*        <div className={st.toolBar_button_paletteColor}*/}
+                                    {/*             style={{backgroundColor: color}}/>*/}
 
-                                            {paletteActive ?
-                                                <Sketch
-                                                    className={st.sketch_component}
-                                                    color={color as any}
-                                                    onChange={setHex as any}
-                                                /> : null
+                                    {/*        {paletteActive ?*/}
+                                    {/*            <Sketch*/}
+                                    {/*                className={st.sketch_component}*/}
+                                    {/*                color={color as any}*/}
+                                    {/*                onChange={setHex as any}*/}
+                                    {/*            /> : null*/}
 
-                                            }
+                                    {/*        }*/}
 
-                                        </div>
-                                        <div className={st.toolBar_preview}
-                                             style={{backgroundColor: color, height: pencilThickness,
-                                                 width: pencilThickness }}/>
+                                    {/*    </div>*/}
+                                    {/*    <div className={st.toolBar_preview}*/}
+                                    {/*         style={{backgroundColor: color, height: pencilThickness,*/}
+                                    {/*             width: pencilThickness }}/>*/}
 
-                                        <Slider
-                                            style={{ width: '8rem'}}
-                                            progress
-                                            defaultValue={pencilThickness}
-                                            onChange={value => {
-                                                setPencilThickness(value)
-                                            }}
-                                            max={20}
-                                            min={2}
-                                            step={2}
-                                        />
-                                    </div>
-                                    <div className={selectedTool === TOOLS.ERASER ?
-                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>
-                                        <div className={selectedTool === TOOLS.ERASER ?
-                                            classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(TOOLS.ERASER)}>
-                                            <EraserIcon/>
-                                        </div>
-                                        <div className={st.toolBar_preview}
-                                             style={{backgroundColor:"#fff", height: eraserThickness,
-                                                 width: eraserThickness }}/>
-                                        <Slider
-                                            style={{ width: '8rem'}}
-                                            progress
-                                            defaultValue={eraserThickness}
-                                            onChange={value => {
-                                                setEraserThickness(value)
-                                            }}
-                                            max={20}
-                                            min={2}
-                                            step={2}
-                                        />
-                                    </div>
+                                    {/*    <Slider*/}
+                                    {/*        style={{ width: '8rem'}}*/}
+                                    {/*        progress*/}
+                                    {/*        defaultValue={pencilThickness}*/}
+                                    {/*        onChange={value => {*/}
+                                    {/*            setPencilThickness(value)*/}
+                                    {/*        }}*/}
+                                    {/*        max={20}*/}
+                                    {/*        min={2}*/}
+                                    {/*        step={2}*/}
+                                    {/*    />*/}
+                                    {/*</div>*/}
+                                    {/*<div className={selectedTool === TOOLS.ERASER ?*/}
+                                    {/*    classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>*/}
+                                    {/*    <div className={selectedTool === TOOLS.ERASER ?*/}
+                                    {/*        classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(TOOLS.ERASER)}>*/}
+                                    {/*        <EraserIcon/>*/}
+                                    {/*    </div>*/}
+                                    {/*    <div className={st.toolBar_preview}*/}
+                                    {/*         style={{backgroundColor:"#fff", height: eraserThickness,*/}
+                                    {/*             width: eraserThickness }}/>*/}
+                                    {/*    <Slider*/}
+                                    {/*        style={{ width: '8rem'}}*/}
+                                    {/*        progress*/}
+                                    {/*        defaultValue={eraserThickness}*/}
+                                    {/*        onChange={value => {*/}
+                                    {/*            setEraserThickness(value)*/}
+                                    {/*        }}*/}
+                                    {/*        max={20}*/}
+                                    {/*        min={2}*/}
+                                    {/*        step={2}*/}
+                                    {/*    />*/}
+                                    {/*</div>*/}
                                 </div>
                                 <div className={st.toolBar}>
                                     <div className={selectedTool === TOOLS.DEFAULT ?
