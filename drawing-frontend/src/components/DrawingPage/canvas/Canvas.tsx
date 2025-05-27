@@ -327,65 +327,65 @@ const Canvas: React.FC = () => {
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
                                     {/*section 2*/}
-                                    {/*<div className={selectedTool === TOOLS.PENCIL ?*/}
-                                    {/*    classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>*/}
-                                    {/*    <div className={selectedTool === TOOLS.PENCIL ?*/}
-                                    {/*        classNames(st.toolBar_button, st.active) : st.toolBar_button} >*/}
-                                    {/*        <PencilIcon/>*/}
-                                    {/*    </div>*/}
-                                    {/*    <div ref={colorPickerRef} className={st.toolBar_palette_button}*/}
-                                    {/*         onClick={() => setPaletteActive(true)}>*/}
-                                    {/*        <PaletteIcon/>*/}
-                                    {/*        <div className={st.toolBar_button_paletteColor}*/}
-                                    {/*             style={{backgroundColor: color}}/>*/}
+                                    <div className={selectedTool === TOOLS.PENCIL ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
+                                        <div className={selectedTool === TOOLS.PENCIL ?
+                                            classNames(st.toolBar_button, st.active) : st.toolBar_button} >
+                                            <PencilIcon/>
+                                        </div>
+                                        <div ref={colorPickerRef} className={st.toolBar_palette_button}
+                                             onClick={() => setPaletteActive(true)}>
+                                            <PaletteIcon/>
+                                            <div className={st.toolBar_button_paletteColor}
+                                                 style={{backgroundColor: color}}/>
 
-                                    {/*        {paletteActive ?*/}
-                                    {/*            <Sketch*/}
-                                    {/*                className={st.sketch_component}*/}
-                                    {/*                color={color as any}*/}
-                                    {/*                onChange={setHex as any}*/}
-                                    {/*            /> : null*/}
+                                            {paletteActive ?
+                                                <Sketch
+                                                    className={st.sketch_component}
+                                                    color={color as any}
+                                                    onChange={setHex as any}
+                                                /> : null
 
-                                    {/*        }*/}
+                                            }
 
-                                    {/*    </div>*/}
-                                    {/*    <div className={st.toolBar_preview}*/}
-                                    {/*         style={{backgroundColor: color, height: pencilThickness,*/}
-                                    {/*             width: pencilThickness }}/>*/}
+                                        </div>
+                                        <div className={st.toolBar_preview}
+                                             style={{backgroundColor: color, height: pencilThickness,
+                                                 width: pencilThickness }}/>
 
-                                    {/*    <Slider*/}
-                                    {/*        style={{ width: '8rem'}}*/}
-                                    {/*        progress*/}
-                                    {/*        defaultValue={pencilThickness}*/}
-                                    {/*        onChange={value => {*/}
-                                    {/*            setPencilThickness(value)*/}
-                                    {/*        }}*/}
-                                    {/*        max={20}*/}
-                                    {/*        min={2}*/}
-                                    {/*        step={2}*/}
-                                    {/*    />*/}
-                                    {/*</div>*/}
-                                    {/*<div className={selectedTool === TOOLS.ERASER ?*/}
-                                    {/*    classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>*/}
-                                    {/*    <div className={selectedTool === TOOLS.ERASER ?*/}
-                                    {/*        classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(TOOLS.ERASER)}>*/}
-                                    {/*        <EraserIcon/>*/}
-                                    {/*    </div>*/}
-                                    {/*    <div className={st.toolBar_preview}*/}
-                                    {/*         style={{backgroundColor:"#fff", height: eraserThickness,*/}
-                                    {/*             width: eraserThickness }}/>*/}
-                                    {/*    <Slider*/}
-                                    {/*        style={{ width: '8rem'}}*/}
-                                    {/*        progress*/}
-                                    {/*        defaultValue={eraserThickness}*/}
-                                    {/*        onChange={value => {*/}
-                                    {/*            setEraserThickness(value)*/}
-                                    {/*        }}*/}
-                                    {/*        max={20}*/}
-                                    {/*        min={2}*/}
-                                    {/*        step={2}*/}
-                                    {/*    />*/}
-                                    {/*</div>*/}
+                                        <Slider
+                                            style={{ width: '8rem'}}
+                                            progress
+                                            defaultValue={pencilThickness}
+                                            onChange={value => {
+                                                setPencilThickness(value)
+                                            }}
+                                            max={20}
+                                            min={2}
+                                            step={2}
+                                        />
+                                    </div>
+                                    <div className={selectedTool === TOOLS.ERASER ?
+                                        classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.ERASER)}>
+                                        <div className={selectedTool === TOOLS.ERASER ?
+                                            classNames(st.toolBar_button, st.active) : st.toolBar_button}  onClick={() => setSelectedTool(TOOLS.ERASER)}>
+                                            <EraserIcon/>
+                                        </div>
+                                        <div className={st.toolBar_preview}
+                                             style={{backgroundColor:"#fff", height: eraserThickness,
+                                                 width: eraserThickness }}/>
+                                        <Slider
+                                            style={{ width: '8rem'}}
+                                            progress
+                                            defaultValue={eraserThickness}
+                                            onChange={value => {
+                                                setEraserThickness(value)
+                                            }}
+                                            max={20}
+                                            min={2}
+                                            step={2}
+                                        />
+                                    </div>
                                 </div>
                                 <div className={st.toolBar}>
                                     <div className={selectedTool === TOOLS.DEFAULT ?
