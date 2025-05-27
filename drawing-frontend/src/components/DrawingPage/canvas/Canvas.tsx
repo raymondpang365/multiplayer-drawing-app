@@ -326,7 +326,6 @@ const Canvas: React.FC = () => {
 
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
-                                    {/*section 2*/}
                                     <div className={selectedTool === TOOLS.PENCIL ?
                                         classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
                                         <div className={selectedTool === TOOLS.PENCIL ?
