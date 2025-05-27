@@ -15,16 +15,15 @@ public class LoggingService {
     @Autowired
     DrawingRepository drawingRepository;
 
-//    section 3
-//    public void logDrawingActionAsync(DrawingActionDto drawingActionDto) {
-//        if(drawingActionDto.getIsMouseDown() && !drawingActionDto.getSelectedTool().equals(Tools.DEFAULT.label)) {
-//            CompletableFuture.runAsync(() -> logDrawingAction(drawingActionDto));
-//        }
-//    }
+    public void logDrawingActionAsync(DrawingActionDto drawingActionDto) {
+        if(drawingActionDto.getIsMouseDown() && !drawingActionDto.getSelectedTool().equals(Tools.DEFAULT.label)) {
+            CompletableFuture.runAsync(() -> logDrawingAction(drawingActionDto));
+        }
+    }
 
-//    private void logDrawingAction(DrawingActionDto drawingActionDto){
-//        DrawingAction drawingAction = new DrawingAction();
-//        drawingAction.setDrawingAction(drawingActionDto);
-//        drawingRepository.save(drawingAction);
-//    }
+    private void logDrawingAction(DrawingActionDto drawingActionDto){
+        DrawingAction drawingAction = new DrawingAction();
+        drawingAction.setDrawingAction(drawingActionDto);
+        drawingRepository.save(drawingAction);
+    }
 }

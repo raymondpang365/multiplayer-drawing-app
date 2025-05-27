@@ -79,17 +79,17 @@ const Canvas: React.FC = () => {
     }, [])
 
     // section 4
-    // useEffect(() => {
-    //     if(connected && sessionId != null){
-    //         if(clientRef != null) {
-    //             // @ts-ignore
-    //             clientRef.sendMessage(
-    //                 "/ws.new_session",
-    //                 sessionId
-    //             )
-    //         }
-    //     }
-    // }, [connected, sessionId])
+    useEffect(() => {
+        if(connected && sessionId != null){
+            if(clientRef != null) {
+                // @ts-ignore
+                clientRef.sendMessage(
+                    "/ws.new_session",
+                    sessionId
+                )
+            }
+        }
+    }, [connected, sessionId])
 
 
     const onMouseDown = (event: React.MouseEvent<HTMLCanvasElement>) => {
@@ -237,21 +237,21 @@ const Canvas: React.FC = () => {
                                           }
                                           else if(topic === `/topic/draw`) {
                                               // section 4
-                                              // if (canvas != null) {
-                                              //     const ctx = canvas.getContext('2d');
-                                              //     if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
-                                              //         drawLine({
-                                              //             ctx: ctx,
-                                              //             x1: msg.x1,
-                                              //             y1: msg.y1,
-                                              //             x2: msg.x2,
-                                              //             y2: msg.y2,
-                                              //             _color: msg.color,
-                                              //             _selectedTool: msg.selectedTool,
-                                              //             _thickness: msg.thickness
-                                              //         })
-                                              //     }
-                                              // }
+                                              if (canvas != null) {
+                                                  const ctx = canvas.getContext('2d');
+                                                  if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
+                                                      drawLine({
+                                                          ctx: ctx,
+                                                          x1: msg.x1,
+                                                          y1: msg.y1,
+                                                          x2: msg.x2,
+                                                          y2: msg.y2,
+                                                          _color: msg.color,
+                                                          _selectedTool: msg.selectedTool,
+                                                          _thickness: msg.thickness
+                                                      })
+                                                  }
+                                              }
 
                                               // section 5
                                               // const player = {
@@ -326,7 +326,6 @@ const Canvas: React.FC = () => {
 
                             <div className={st.heatmapFooter}>
                                 <div className={st.toolBar}>
-                                    {/*section 2*/}
                                     <div className={selectedTool === TOOLS.PENCIL ?
                                         classNames(st.group, st.active) : st.group} onClick={() => setSelectedTool(TOOLS.PENCIL)}>
                                         <div className={selectedTool === TOOLS.PENCIL ?

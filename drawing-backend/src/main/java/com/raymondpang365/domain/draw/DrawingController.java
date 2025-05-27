@@ -30,13 +30,13 @@ public class DrawingController {
     @Autowired
     SimpMessagingTemplate messagingTemplate;
 
-//    @MessageMapping("/ws.draw")
-//    @SendTo("/topic/draw")
-//    public DrawingActionDto draw(DrawingActionDto drawingActionDto) throws Exception {
-//        loggingService.logDrawingActionAsync(drawingActionDto);
-//        localCacheService.saveDrawingAction(drawingActionDto);
-//        return drawingActionDto;
-//    }
+    @MessageMapping("/ws.draw")
+    @SendTo("/topic/draw")
+    public DrawingActionDto draw(DrawingActionDto drawingActionDto) throws Exception {
+        loggingService.logDrawingActionAsync(drawingActionDto);
+        localCacheService.saveDrawingAction(drawingActionDto);
+        return drawingActionDto;
+    }
 
     @MessageMapping("/ws.new_session")
     public void createNewSession(@Payload String sessionId,
