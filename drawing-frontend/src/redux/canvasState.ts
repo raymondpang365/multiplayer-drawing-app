@@ -18,9 +18,8 @@ export default (state = initialState, action : Action): State => {
             const existing = { ...state.players }
             delete existing[action.sessionId]
             return { ...state, players: existing }
-        // section 5
-        // case ActionTypes.SET_PLAYER:
-        //     return {...state, players: {...state.players, ...action.player}}
+        case ActionTypes.SET_PLAYER:
+            return {...state, players: {...state.players, ...action.player}}
 
         default:
             return state

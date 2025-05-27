@@ -35,11 +35,10 @@ interface RemoveOnlinePlayerAction {
     sessionId: string;
 }
 
-// section 5
-// interface SetPlayerAction {
-//     type: ActionTypes.SET_PLAYER;
-//     player: Record<string, any>;
-// }
+interface SetPlayerAction {
+    type: ActionTypes.SET_PLAYER;
+    player: Record<string, any>;
+}
 
 export type Action =
     | SetSessionIdAction
@@ -47,4 +46,4 @@ export type Action =
     | SetAllPlayersAction
     | RemoveOnlinePlayerAction
     | RegisterSessionAction
- // section 5   | SetPlayerAction
+    | SetPlayerAction

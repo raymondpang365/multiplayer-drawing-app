@@ -1,6 +1,6 @@
 import {DrawLineParams, TOOLS} from "@components/DrawingPage/canvas/type";
 
-// section 4
+
 const drawLine = ({x1, y1, x2, y2, ctx, _color, _selectedTool, _thickness} : DrawLineParams) => {
     const dx = x2 - x1;
     const dy = y2 - y1;

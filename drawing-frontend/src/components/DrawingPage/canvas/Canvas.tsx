@@ -78,7 +78,7 @@ const Canvas: React.FC = () => {
         dispatch({ type: REGISTER_SESSION })
     }, [])
 
-    // section 4
+
     useEffect(() => {
         if(connected && sessionId != null){
             if(clientRef != null) {
@@ -236,7 +236,6 @@ const Canvas: React.FC = () => {
                                               })
                                           }
                                           else if(topic === `/topic/draw`) {
-                                              // section 4
                                               if (canvas != null) {
                                                   const ctx = canvas.getContext('2d');
                                                   if (msg.isMouseDown && msg.selectedTool !== TOOLS.DEFAULT) {
@@ -253,22 +252,21 @@ const Canvas: React.FC = () => {
                                                   }
                                               }
 
-                                              // section 5
-                                              // const player = {
-                                              //     [msg.sessionId]: {
-                                              //         sessionId: msg.sessionId,
-                                              //         sessionNickname: msg.sessionNickname,
-                                              //         x: msg.x2,
-                                              //         y: msg.y2,
-                                              //         color: msg.color,
-                                              //         selectedTool: msg.selectedTool,
-                                              //         thickness: msg.thickness
-                                              //     }
-                                              // }
-                                              // dispatch({
-                                              //     type: ActionTypes.SET_PLAYER,
-                                              //     player: player
-                                              // })
+                                              const player = {
+                                                  [msg.sessionId]: {
+                                                      sessionId: msg.sessionId,
+                                                      sessionNickname: msg.sessionNickname,
+                                                      x: msg.x2,
+                                                      y: msg.y2,
+                                                      color: msg.color,
+                                                      selectedTool: msg.selectedTool,
+                                                      thickness: msg.thickness
+                                                  }
+                                              }
+                                              dispatch({
+                                                  type: ActionTypes.SET_PLAYER,
+                                                  player: player
+                                              })
                                           }
                                       }}
                                       ref={(client) => {
@@ -302,22 +300,22 @@ const Canvas: React.FC = () => {
                                             className={st.itemCanvas} onMouseDown={onMouseDown} onMouseMove={handleDrag}
                                             onMouseUp={handleMouseUp}
                                             ref={canvasRef}/>
-                                    {/* section 5 */}
-                                    {/*{*/}
-                                    {/*    Object.keys(players).map(k => players[k])*/}
-                                    {/*        .map( p => {*/}
-                                    {/*            console.log(p)*/}
-                                    {/*            return <div className={st.playerIndicator}*/}
-                                    {/*                        style={{ top: p.y, left: p.x }}>*/}
-                                    {/*                <ToolIcon*/}
-                                    {/*                    _selectedTool={p.selectedTool}*/}
-                                    {/*                    _thickness={p.thickness}*/}
-                                    {/*                    _color={p.color}/>*/}
 
-                                    {/*                <span  className={st.playerIndicator_username}> { p.sessionNickname } </span>*/}
-                                    {/*            </div>*/}
-                                    {/*        } )*/}
-                                    {/*}*/}
+                                    {
+                                        Object.keys(players).map(k => players[k])
+                                            .map( p => {
+                                                console.log(p)
+                                                return <div className={st.playerIndicator}
+                                                            style={{ top: p.y, left: p.x }}>
+                                                    <ToolIcon
+                                                        _selectedTool={p.selectedTool}
+                                                        _thickness={p.thickness}
+                                                        _color={p.color}/>
+
+                                                    <span  className={st.playerIndicator_username}> { p.sessionNickname } </span>
+                                                </div>
+                                            } )
+                                    }
                                     <div style={{backgroundImage: bg,
                                         width: '100%', height: '100%', zIndex: 2}}
                                          className={st.itemCanvas}/>
